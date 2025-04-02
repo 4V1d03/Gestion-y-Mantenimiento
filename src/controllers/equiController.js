@@ -1,6 +1,5 @@
 const conexion = require('../db/db');
 
-// Mostrar todos los equipos
 exports.index = (req, res) => {
     conexion.query("SELECT * FROM equipos", (err, resultado) => {
         if (err) {
@@ -12,11 +11,19 @@ exports.index = (req, res) => {
 };
 
 // Formulario para crear equipo
+// exports.crear = (req, res) => {
+//     res.render("equipo/crear");
+// };
 exports.crear = (req, res) => {
-    res.render("equipo/crear");
+    conexion.query("SELECT id, nombre, email FROM usuarios", (err, resultado) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        res.render("equipo/crear", { usuarios: resultado });
+    });
 };
 
-// Guardar equipo
 exports.save = (req, res) => {
     const { tipo, marca, modelo, numero_serie, estado, usuario_id } = req.body;
 
@@ -36,7 +43,6 @@ exports.save = (req, res) => {
     });
 };
 
-// Ver equipo
 exports.ver = (req, res) => {
     const id = req.params.id;
     conexion.query("SELECT * FROM equipos WHERE id = ?", [id], (err, resultado) => {
@@ -48,19 +54,40 @@ exports.ver = (req, res) => {
     });
 };
 
-// Editar equipo
+// exports.editar = (req, res) => {
+//     const id = req.params.id;
+//     conexion.query("SELECT * FROM equipos WHERE id = ?", [id], (err, resultado) => {
+//         if (err) {
+//             console.log(err);
+//             return;
+//         }
+//         res.render("equipo/editar", { equipo: resultado[0] });
+//     });
+// };
+
 exports.editar = (req, res) => {
     const id = req.params.id;
-    conexion.query("SELECT * FROM equipos WHERE id = ?", [id], (err, resultado) => {
+
+    conexion.query("SELECT * FROM equipos WHERE id = ?", [id], (err, equipoResultado) => {
         if (err) {
             console.log(err);
             return;
         }
-        res.render("equipo/editar", { equipo: resultado[0] });
+
+        conexion.query("SELECT id, nombre, email FROM usuarios", (err2, usuariosResultado) => {
+            if (err2) {
+                console.log(err2);
+                return;
+            }
+
+            res.render("equipo/editar", {
+                equipo: equipoResultado[0],
+                usuarios: usuariosResultado
+            });
+        });
     });
 };
 
-// Actualizar equipo
 exports.update = (req, res) => {
     const id = req.body.id;
     const { tipo, marca, modelo, numero_serie, estado, usuario_id } = req.body;
@@ -81,7 +108,6 @@ exports.update = (req, res) => {
     });
 };
 
-// Eliminar equipo
 exports.delete = (req, res) => {
     const id = req.body.id;
 

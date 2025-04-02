@@ -1,6 +1,6 @@
 const conexion = require('../db/db');
 
-// Mostrar lista de usuarios
+
 exports.index = (req, res) => {
     conexion.query("SELECT * FROM usuarios", (err, resultado) => {
         if (err) {
@@ -11,12 +11,10 @@ exports.index = (req, res) => {
     });
 };
 
-// Mostrar formulario para crear usuario
 exports.crear = (req, res) => {
     res.render("usuario/crear");
 };
 
-// Guardar nuevo usuario
 exports.save = (req, res) => {
     const { nombre, email, contrasenia, rol, especialidad, telefono } = req.body;
 
@@ -36,7 +34,6 @@ exports.save = (req, res) => {
     });
 };
 
-// Ver detalle del usuario
 exports.ver = (req, res) => {
     const id = req.params.id;
     conexion.query("SELECT * FROM usuarios WHERE id = ?", [id], (err, resultado) => {
@@ -48,7 +45,6 @@ exports.ver = (req, res) => {
     });
 };
 
-// Mostrar formulario de edición
 exports.editar = (req, res) => {
     const id = req.params.id;
     conexion.query("SELECT * FROM usuarios WHERE id = ?", [id], (err, resultado) => {
@@ -60,7 +56,6 @@ exports.editar = (req, res) => {
     });
 };
 
-// Actualizar datos
 exports.update = (req, res) => {
     const id = req.body.id;
     const { nombre, email, contrasenia, rol, especialidad, telefono } = req.body;
@@ -81,7 +76,6 @@ exports.update = (req, res) => {
     });
 };
 
-// Eliminar usuario
 exports.delete = (req, res) => {
     const id = req.body.id;
 
